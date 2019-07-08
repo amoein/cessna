@@ -1,0 +1,4 @@
+[{<<"cessna">>,
+  {git,"git@172.16.90.97:backend/cessna.git",
+       {ref,"1840cd998186c03820cd08455040d5e7045c917b"}},
+  0}].
