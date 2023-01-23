@@ -7,19 +7,15 @@
 %%% Created : 23. Jun 2018 12:20 PM
 %%%-------------------------------------------------------------------
 -module(cessna_socket_tcp_client_example).
+
 -author("aleyandro").
 
 -behaviour(gen_server).
 
 %% API
 -export([start_link/0]).
-
 %% gen_server callbacks
--export([init/1,
-         handle_call/3,
-         handle_cast/2,
-         handle_info/2,
-         terminate/2,
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2,
          code_change/3]).
 
 -define(SERVER, ?MODULE).
@@ -47,7 +43,6 @@ handle_call(_Request, _From, State) ->
 handle_cast(st, State) ->
     {ok, Socket} = gen_tcp:connect("127.0.0.1", 8080, [binary]),
     {noreply, State#state{socket = Socket}};
-
 handle_cast(_Request, State) ->
     {noreply, State}.
 
