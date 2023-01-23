@@ -9,7 +9,6 @@
 
 %% API
 -export([start_link/0]).
-
 %% Supervisor callbacks
 -export([init/1]).
 
@@ -29,7 +28,7 @@ start_link() ->
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
     cessna_pool_sup:start_link(),
-    {ok, { {one_for_one, 0, 1}, []} }.
+    {ok, {{one_for_one, 0, 1}, []}}.
 
 %%====================================================================
 %% Internal functions

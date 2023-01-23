@@ -1,4 +1,4 @@
-.PHONY: compile release tar
+.PHONY: compile release tar format
 
 all: compile tar
 
@@ -10,3 +10,6 @@ release:
 
 tar:
 	./rebar3 release tar
+
+format:
+	./rebar3 format
