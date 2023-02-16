@@ -8,7 +8,7 @@ _*
 *.swo
 .erlang.cookie
 ebin
-log
+log*
 erl_crash.dump
 .rebar
 logs
@@ -17,3 +17,5 @@ _build
 *.iml
 rebar3.crashdump
 .DS_*
+.vscode
+node_modules

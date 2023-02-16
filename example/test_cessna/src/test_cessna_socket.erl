@@ -8,7 +8,7 @@
 %%%-------------------------------------------------------------------
 -module(test_cessna_socket).
 
--author("aleyandro").
+-author("amoein").
 
 -behaviour(gen_server).
 
@@ -18,20 +18,20 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2,
          code_change/3]).
 
--record(state, {socket, pool_pid}).
+-record(state, {socket}).
 
 %%%===================================================================
 %%% API
 %%%===================================================================
-start_link([Socket, PoolPID]) ->
-    gen_server:start_link(?MODULE, [Socket, PoolPID], []).
+start_link([Socket]) ->
+    gen_server:start_link(?MODULE, [Socket], []).
 
 %%%===================================================================
 %%% gen_server callbacks
 %%%===================================================================
 
-init([Socket, PoolPID]) ->
-    {ok, #state{socket = Socket, pool_pid = PoolPID}}.
+init([Socket]) ->
+    {ok, #state{socket = Socket}}.
 
 handle_call(_Request, _From, State) ->
     {reply, ok, State}.
@@ -39,10 +39,10 @@ handle_call(_Request, _From, State) ->
 handle_cast(_Request, State) ->
     {noreply, State}.
 
-handle_info({tcp, _Socket, Data}, #state{socket = S, pool_pid = PID} = State) ->
-    gen_tcp:send(S, Data),
-    gen_server:cast(PID, new),
+handle_info({tcp, _Socket, Data}, #state{socket = S} = State) ->
+    gen_tcp:send(S, Data), 
     {noreply, State};
+    
 handle_info(_Info, State) ->
     {noreply, State}.
 
