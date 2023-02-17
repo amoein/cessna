@@ -1,11 +1,9 @@
 .PHONY: clean ct format format-check dialyzer test
 
-format:
-	 ERL_AFLAGS="-enable-feature all" rebar3 format
+format:	 
 	 rebar3 fmt
 
-format-check:	 
-	 ERL_AFLAGS="-enable-feature all" rebar3 format 
+format-check:	 	 
 	 rebar3 fmt --check
 
 ct:
