@@ -42,7 +42,7 @@ jobs:
           rebar3-version: '3.20.0'
       - run: rebar3 dialyzer   
 
-  CT:
+  common_test:
     needs: dialyzer
     runs-on: ubuntu-latest
     steps:
