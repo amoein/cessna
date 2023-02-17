@@ -1,8 +1,0 @@
--name test@$192.168.2.225
-
--setcookie test-vm
-
-+K true
-+A 100
-+P 100000000
-+Q 100000000

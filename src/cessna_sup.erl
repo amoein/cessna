@@ -1,22 +1,30 @@
-%%%-------------------------------------------------------------------
-%% @doc cessna top level supervisor.
-%% @end
-%%%-------------------------------------------------------------------
-
 -module(cessna_sup).
+
+-author("amoein").
 
 -behaviour(supervisor).
 
 %% API
--export([start_link/0]).
+-export([start_link/0, add_new_pool/2]).
 %% Supervisor callbacks
 -export([init/1]).
 
+-include("cessna.hrl").
+
 -define(SERVER, ?MODULE).
 
-%%====================================================================
-%% API functions
-%%====================================================================
+%%%===================================================================
+%%% API functions
+%%%===================================================================
+
+-spec add_new_pool(atom(), option()) -> ok.
+add_new_pool(Name, Opts) ->
+    PoolSpec =
+        #{id => Name,
+          start => {cessna_pool, start_link, [Name, Opts]},
+          restart => permanent,
+          type => supervisor},
+    supervisor:start_child(?MODULE, PoolSpec).
 
 start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
@@ -25,11 +33,6 @@ start_link() ->
 %% Supervisor callbacks
 %%====================================================================
 
-%% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
+%% Child :: {Id, StartFunc, Restart, Shutdown, Type, Modules}
 init([]) ->
-    cessna_pool_sup:start_link(),
     {ok, {{one_for_one, 0, 1}, []}}.
-
-%%====================================================================
-%% Internal functions
-%%====================================================================
