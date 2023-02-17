@@ -5,7 +5,8 @@ format:
 	 rebar3 fmt
 
 format-check:	 
-	 ERL_AFLAGS="-enable-feature all" rebar3 format -v
+	 ERL_AFLAGS="-enable-feature all" rebar3 format 
+	 rebar3 fmt --check
 
 ct:
 	rebar3 ct -v 100 --cover
