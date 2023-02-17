@@ -17,13 +17,15 @@
 %%% API functions
 %%%===================================================================
 
--spec add_new_pool(atom(), option()) -> ok.
+-spec add_new_pool(Name :: atom(), Opts :: option()) -> {ok, pid()} | {error, term()}.
 add_new_pool(Name, Opts) ->
     PoolSpec =
-        #{id => Name,
-          start => {cessna_pool, start_link, [Name, Opts]},
-          restart => permanent,
-          type => supervisor},
+        #{
+            id => Name,
+            start => {cessna_pool, start_link, [Name, Opts]},
+            restart => permanent,
+            type => supervisor
+        },
     supervisor:start_child(?MODULE, PoolSpec).
 
 start_link() ->

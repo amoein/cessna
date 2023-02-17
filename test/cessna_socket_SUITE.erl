@@ -24,16 +24,18 @@ end_per_suite(_Config) ->
 all() ->
     [tcp_test].
 
-tcp_test(_Config) ->  
+tcp_test(_Config) ->
     Option =
-        #option{type = tcp,
-                port = 8080,
-                ips = [{127, 0, 0, 1}],
-                handler_module = cessna_tcp_test_server,
-                handler_func = start_link,
-                number_of_worker = 10,
-                notify_pool_per_accept = 10,
-                socket_option = [{mode,binary},{reuseaddr, true}, {keepalive, false}]},
+        #option{
+            type = tcp,
+            port = 8080,
+            ips = [{127, 0, 0, 1}],
+            handler_module = cessna_tcp_test_server,
+            handler_func = start_link,
+            number_of_worker = 10,
+            notify_pool_per_accept = 10,
+            socket_option = [{mode, binary}, {reuseaddr, true}, {keepalive, false}]
+        },
     cessna:add_listener(test1, Option),
     [cessna_tcp_test_client:start_link() || _ <- lists:seq(1, 5)],
     timer:sleep(10000),

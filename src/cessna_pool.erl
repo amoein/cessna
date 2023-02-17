@@ -9,8 +9,14 @@
 %% API
 -export([start_link/2]).
 %% gen_server callbacks
--export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2,
-         code_change/3]).
+-export([
+    init/1,
+    handle_call/3,
+    handle_cast/2,
+    handle_info/2,
+    terminate/2,
+    code_change/3
+]).
 
 -record(state, {option :: option(), listener_socket :: [map()]}).
 
@@ -24,38 +30,40 @@ start_link(Name, Opts) ->
 %%%===================================================================
 %%% gen_server callbacks
 %%%===================================================================
--spec init(Option :: option()) -> {ok, #state{}}.
-init([#option{ips = Ips,
-              type = Type,
-              port = Port,
-              socket_option = SocketOpts,
-              number_of_worker = WNum} =
-          Option]) ->
+-spec init([Option :: option()]) -> {ok, #state{}}.
+init([
+    #option{
+        ips = Ips,
+        type = Type,
+        port = Port,
+        socket_option = SocketOpts,
+        number_of_worker = WNum
+    } =
+        Option
+]) ->
     ?LOG_DEBUG("~nPool started~n", []),
-    ListenerSockets =
-        case Type of
-            tcp ->
-                [listen_tcp(Port, Ip, SocketOpts) || Ip <- Ips];
-            ssl ->
-                [listen_ssl(Port, Ip, SocketOpts) || Ip <- Ips]
-        end,
+
+    % TODO: ssl
+    ListenerSockets = [listen_tcp(Port, Ip, SocketOpts) || Ip <- Ips],
 
     % WorkerReference =
-    lists:foldl(fun(Socket, Acc) ->
-                   MonitorRefs = [add_new_worker(Type, Socket, Option) || _ <- lists:seq(0, WNum)],
-                   {ok, [#{socket => Socket, refs => MonitorRefs} | Acc]}
-                end,
-                [],
-                ListenerSockets),
+    lists:foldl(
+        fun(Socket, Acc) ->
+            MonitorRefs = [add_new_worker(Type, Socket, Option) || _ <- lists:seq(0, WNum)],
+            {ok, [#{socket => Socket, refs => MonitorRefs} | Acc]}
+        end,
+        [],
+        ListenerSockets
+    ),
     {ok, #state{option = Option, listener_socket = ListenerSockets}}.
 
 -spec handle_call(Request :: term(), From :: {pid(), term()}, State :: #state{}) ->
-                     {reply, Reply :: term(), NewState :: #state{}}.
+    {reply, Reply :: term(), NewState :: #state{}}.
 handle_call(_Request, _From, State) ->
     {reply, ok, State}.
 
 -spec handle_cast(Request :: term(), State :: #state{}) ->
-                     {noreply, NewState :: #state{}}.
+    {noreply, NewState :: #state{}}.
 handle_cast({worker_start, PID}, State) ->
     ?LOG_DEBUG("~n listener worker start ~p ~n", [PID]),
 
@@ -83,23 +91,16 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
--spec add_new_worker(Type :: atom(), Socket :: atom(), Option :: option()) -> pid().
+-spec add_new_worker(Type :: atom(), Socket :: atom(), Option :: option()) -> reference().
 add_new_worker(tcp, Socket, Option) ->
     PID = proc_lib:spawn(cessna_worker_tcp, accept, [Socket, self(), Option]),
-    erlang:monitor(process, PID);
-%% TODO: ssl
-add_new_worker(ssl, _Socket, _Option) ->
-    %PID = proc_lib:spawn(cessna_worker_ssl, accept, [Socket, Option]),
-    %erlang:monitor(process, PID).
-    self().
+    erlang:monitor(process, PID).
 
-%%%===================================================================
-%%% start socket with ip
-
+% TODO: ssl
+-spec listen_tcp(Port :: integer(), Ip :: inet:ip_address(), SocketOpts :: list()) ->
+    gen_tcp:socket().
 listen_tcp(Port, Ip, SocketOpts) ->
     {ok, Socket} = gen_tcp:listen(Port, [{ip, Ip} | SocketOpts]),
     Socket.
 
-listen_ssl(Port, Ip, SocketOpts) ->
-    {ok, Socket} = ssl:listen(Port, [{ip, Ip} | SocketOpts]),
-    Socket.
+% TODO: ssl
