@@ -22,4 +22,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v1
+      - uses: erlef/setup-beam@v1
       - run: rebar3 ct -v 100 --cover
