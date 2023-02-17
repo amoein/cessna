@@ -1,5 +1,0 @@
-## Name of the node
--name cortina@127.0.0.1
-
-## Cookie for distributed erlang
--setcookie cortina_secret
