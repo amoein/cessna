@@ -24,8 +24,7 @@ end_per_suite(_Config) ->
 all() ->
     [tcp_test].
 
-tcp_test(_Config) ->
-    ?LOG_INFO("~n Start test...", []),
+tcp_test(_Config) ->  
     Option =
         #option{type = tcp,
                 port = 8080,
@@ -36,7 +35,6 @@ tcp_test(_Config) ->
                 notify_pool_per_accept = 10,
                 socket_option = [{mode,binary},{reuseaddr, true}, {keepalive, false}]},
     cessna:add_listener(test1, Option),
-    cessna_tcp_test_client:start_link(),
     [cessna_tcp_test_client:start_link() || _ <- lists:seq(1, 5)],
     timer:sleep(10000),
     ok.

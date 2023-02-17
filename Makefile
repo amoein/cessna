@@ -7,7 +7,7 @@ test:
 	ct_run -logdir logs
 
 ct:
-	rebar3 ct -v 100
+	rebar3 ct -v 100 --cover
 
 clean:
 	rebar3 clean
