@@ -17,5 +17,6 @@ jobs:
 
   test:
     needs: build
+    runs-on: ubuntu-latest
     steps:
-      -run: make ct
+      - run: make ct
