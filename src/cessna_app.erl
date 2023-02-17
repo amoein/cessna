@@ -10,7 +10,7 @@
 %%====================================================================
 
 -spec start(_StartType :: tuple(), _StartArgs :: tuple()) ->
-               {ok, tuple()} | {error, tuple()}.
+    {ok, pid()} | {error, tuple()}.
 start(_StartType, _StartArgs) ->
     cessna_sup:start_link().
 

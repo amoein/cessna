@@ -18,8 +18,32 @@ jobs:
           rebar3-version: '3.20.0'
       - run: rebar3 compile
 
-  test:
-    needs: build
+  format:
+    needs: build    
+    runs-on: ubuntu-latest
+    env:
+      ERL_AFLAGS: "-enable-feature all"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: '25'
+          rebar3-version: '3.20.0'
+      - run: rebar3 fmt --check  
+
+  dialyzer:
+    needs: format   
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: '25'
+          rebar3-version: '3.20.0'
+      - run: rebar3 dialyzer   
+
+  common_test:
+    needs: dialyzer
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

@@ -3,7 +3,7 @@
 -author("amoein").
 
 %% API
--export([add_listener/2, get_listener_info/1]).
+-export([add_listener/2]).
 
 -include("cessna.hrl").
 
@@ -11,7 +11,3 @@
 add_listener(Name, Opts) ->
     cessna_sup:add_new_pool(Name, Opts),
     ok.
-
--spec get_listener_info(atom()) -> ok.
-get_listener_info(Name) ->
-    cessna_pool:get_info(Name).

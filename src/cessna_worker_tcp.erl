@@ -6,8 +6,7 @@
 
 -include("cessna.hrl").
 
--record(state,
-        {pool_pid :: pid(), number_of_accept = 0 :: integer(), option :: option()}).
+-record(state, {pool_pid :: pid(), number_of_accept = 0 :: integer(), option :: option()}).
 
 -spec accept(ListenerSocket :: inet:socket(), PoolPid :: pid(), Option :: option()) -> ok.
 accept(ListenerSocket, PoolPid, Option) ->
@@ -35,13 +34,18 @@ accept_loop(Socket, State) ->
     end.
 
 -spec update_state(#state{}) -> #state{}.
-update_state(#state{number_of_accept = AN,
-                    option = #option{notify_pool_per_accept = NP},
-                    pool_pid = PID} =
-                 State) ->
-    logger:debug("AN : ~p , NP :~p", [AN, NP]),
-    if (AN + 1) rem NP == 0 ->
-           gen_server:cast(PID, {notify, self()})
+update_state(
+    #state{
+        number_of_accept = AN,
+        option = #option{notify_pool_per_accept = NP},
+        pool_pid = PID
+    } =
+        State
+) ->
+    ?LOG_DEBUG("AN : ~p , NP :~p", [AN, NP]),
+    if
+        (AN + 1) rem NP == 0 ->
+            gen_server:cast(PID, {notify, self()})
     end,
 
     State#state{number_of_accept = AN + 1}.
