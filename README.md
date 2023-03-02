@@ -44,8 +44,9 @@ there are simple `MFA` minus part of `A` , the Arity part is an array contain `[
     end.
 
 it's better to use starting of gen_server with it:
--behaviour(gen_server).
 
+    -behaviour(gen_server).
+    
     start_link([Socket, PoolPID]) ->
     	gen_server:start_link(?MODULE, [Socket, PoolPID], []).
 
