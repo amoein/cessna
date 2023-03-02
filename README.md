@@ -115,3 +115,14 @@ For add new acceptor you should use `cessna_sup:add_new_pool`:
 
             Erlang socket option. array() ::
             [[socket_setopt()](https://www.erlang.org/doc/man/inet.html#type-socket_setopt)]
+
+## Version History
+
+- 0.2.0 (2 March 2023)
+    - Remove extra code
+    - Improve documentation
+    - Improve test
+  
+- 0.1.0(8 JUl 2019)
+    - Initial Release
+  
