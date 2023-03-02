@@ -37,13 +37,15 @@ Add this to `your_app.erl` on `start` method:
 
 ### `handler_module` ,` handler_func`:
 
-there are simple `MFA` minus part of `A` , the Arity part is an array contain `[Socket :: inet:socket(), PoolPID :: pid()]`, for example:
+There are simple `MFA` minus part of `A` , the Arity part is an array contain `[Socket :: inet:socket(), PoolPID :: pid()]`, for example:
 
+    -module(my_module).
+    
     my_function([Socket , PID])->
     .....
     end.
 
-it's better to use starting of gen_server with it:
+It's better to be used on starting of gen_server with it:
 
     -behaviour(gen_server).
     
@@ -61,7 +63,7 @@ Currently it is `tcp`, but im ganna implement `ssl` soon.
 
 ### `number_of_worker`:
 
-number of concurrent listener: `non_neg_integer` from 0
+Number of concurrent listener: `non_neg_integer` from 0
 
 ### `ips`:
 
