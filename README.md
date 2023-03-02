@@ -1,4 +1,4 @@
-# cessna
+# Cessna
 
 Minimal Socket Acceptor
 
