@@ -67,7 +67,7 @@ Number of concurrent listener: `non_neg_integer` from 0
 
 ### `ips`:
 
-Cessna can listen to multiple inter face and ip for same port. array() ::
+Cessna can listen to multiple interface and ip for same port. array() ::
 [[ip_address()](https://www.erlang.org/doc/man/inet.html#type-ip_address)]
 
 ### `socket_option`:
