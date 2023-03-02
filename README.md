@@ -1,76 +1,116 @@
 # Cessna
 
-Minimal Socket Acceptor
+Cessna is a lightweight, TCP based socket acceptor pool for Erlang/OTP.
 
-## Usage
+![CI](https://github.com/amoein/cessna/actions/workflows/ci.yaml/badge.svg)
 
-Put in `rebar.config`.
+## Goals
 
-    	{deps, [
-    	 ....
-    	{cessna,  {git,  "git@github.com:amoein/cessna.git"}},
-    	 ....
-    	]}.
+Cessna aims to provide a simple and lightweight approach to accepting TCP while you have heavy loads.
+Mostly, It helps when you have live connections like a Chat or an AMPQ server. 
+For example, try to imagine this scenario:
+While your server has a 100K socket connection, it goes down (for some reason like deployment) and gets back up; you face heavy socket accept requests concurrently.
 
+## Installation
+Its better to use Erlang/OTP +18
 
-Add this to `your_app.erl` on `start` method:
-
-    -include_lib("cessna/include/cessna.hrl").
-
+- Step 1: 
+    Add `cessna` to `rebar.config`.
+    ```erlang
+    {deps, [
+     ....
+    {cessna,  {git,  "git@github.com:amoein/cessna.git"}},
+     ....
+    ]}.
+     ```   
+     
+- Step 2:
+    Make sure `cessna` starts in `your_app.erl`:
+    ```erlang
+    -module(your_app).
+    
     start(_StartType, _StartArgs)  ->
-
     ....
     application:ensure_started(cessna),
-    Option  = #option{type  =  tcp,
-                      port  =  8080,
-                      handler_module  =  your_server_socket,
-                      handler_func  =  your_server_function,
-                      number_of_worker  =  10,
-                      ips  =  [{0,0,0,0}],
-                      socket_option  =  [binary]},
-
-    {ok,  _}  =  cessna_sup:add_new_pool(your_pool_name,  Option),
-
-    ....
-
-## Options
-
-### `handler_module` ,` handler_func`:
-
-There are simple `MFA` minus part of `A` , the Arity part is an array contain `[Socket :: inet:socket(), PoolPID :: pid()]`, for example:
-
-    -module(my_module).
+    ...
+    ```
     
-    my_function([Socket , PID])->
-    .....
-    end.
+- Step 3:
 
-It's better to be used on starting of gen_server with it:
-
-    -behaviour(gen_server).
+    ```bash
+    rebar3 deps
+    ```
     
-    start_link([Socket, PoolPID]) ->
-    	gen_server:start_link(?MODULE, [Socket, PoolPID], []).
+## Usage
+
+First of all you should include `cessna/include/cessna.hrl` in your module like this:
+
+```erlang
+-include_lib("cessna/include/cessna.hrl").
+```
+
+For add new acceptor you should use `cessna_sup:add_new_pool`:
+
+```erlang
+{ok,  _}  =  cessna_sup:add_new_pool(your_pool_name,  #option{}),
+````
+- Spec
+
+    - `your_pool_name`:
+        It's your acceptor pool name and it's `atom()`
+        
+    - `#option{}`:
+       It's record define by cessne contains:
+       ```erlang
+       #option{type  =  tcp,
+               port  =  8080,
+               handler_module  =  your_server_socket,
+               handler_func  =  your_server_function,
+               number_of_worker  =  10,
+               ips  =  [{0,0,0,0}],
+               socket_option  =  [binary]}
+       ```        
+
+        - `handler_module` and ` handler_func`:
+
+            There are simple `MFA`(minus part of `A`). The Arity part is an array contain `[Socket :: inet:socket(), PoolPID :: pid()]`, for example:
+            ```erlang    
+             -module(my_module).
+
+             my_function([Socket , PID])->
+             .....
+             end.
+            ```   
+            To get socket messages, you **must** provide a listening loop in your function.
+            For more handy usage, it's better to be used on starting `gen_serve` like this:
+            ```erlang
+            - module(handler_module).
+            
+            -behaviour(gen_server).
+
+            start_link([Socket, PoolPID]) ->
+                gen_server:start_link(?MODULE, [Socket, PoolPID], []).
+            ```    
 
 
-### `type`:
+        - `type`:
 
-Currently it is `tcp`, but im ganna implement `ssl` soon.
+            Currently it is `tcp`, but im ganna implement `ssl` soon.
 
-### `port`:
+        - `port`:
 
-`non_neg_integer` from 0 to 65535.
+            `non_neg_integer` from 0 to 65535.
 
-### `number_of_worker`:
+        - `number_of_worker`:
 
-Number of concurrent listener: `non_neg_integer` from 0
+            Number of concurrent listener: `non_neg_integer` from 0
 
-### `ips`:
+        - `ips`:
 
-Cessna can listen to multiple interface and ip for same port. array() ::
-[[ip_address()](https://www.erlang.org/doc/man/inet.html#type-ip_address)]
+            Cessna can listen to multiple interface and ip for same port. array() ::
+            [[ip_address()](https://www.erlang.org/doc/man/inet.html#type-ip_address)]
 
-### `socket_option`:
+        - `socket_option`:
 
-Erlang socket option. array() ::
-[[socket_setopt()](https://www.erlang.org/doc/man/inet.html#type-socket_setopt)]
+            Erlang socket option. array() ::
+            [[socket_setopt()](https://www.erlang.org/doc/man/inet.html#type-socket_setopt)]
