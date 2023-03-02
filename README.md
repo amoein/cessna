@@ -12,7 +12,8 @@ For example, try to imagine this scenario:
 While your server has a 100K socket connection, it goes down (for some reason like deployment) and gets back up; you face heavy socket accept requests concurrently.
 
 ## Installation
-Its better to use Erlang/OTP +18
+- Pre Requirement:
+    Use `Erlang/OTP +18`.
 
 - Step 1: 
     Add `cessna` to `rebar.config`.
