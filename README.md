@@ -117,6 +117,8 @@ For add new acceptor you should use `cessna_sup:add_new_pool`:
             [[socket_setopt()](https://www.erlang.org/doc/man/inet.html#type-socket_setopt)]
 
 ## Version History
+- 0.2.1 (3 March 2023)
+    - Fix bug in `cessna_worker_tcp` and `cessna.hrl` 
 
 - 0.2.0 (2 March 2023)
     - Remove extra code
