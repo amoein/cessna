@@ -45,7 +45,9 @@ update_state(
     ?LOG_DEBUG("AN : ~p , NP :~p", [AN, NP]),
     if
         (AN + 1) rem NP == 0 ->
-            gen_server:cast(PID, {notify, self()})
+            gen_server:cast(PID, {notify, self()});
+        true ->
+            ok
     end,
 
     State#state{number_of_accept = AN + 1}.
